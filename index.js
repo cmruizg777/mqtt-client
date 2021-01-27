@@ -2,14 +2,16 @@
 const mqtt = require('mqtt');
 
 const client = mqtt.connect("mqtt://localhost:1883");
-
+let connected = false;
 console.log("Connecting to MQTT Client");
 
 client.on("connect", ack => {
     console.log("MQTT Client Connected!");
+    connected = true;
     publish();
     
 });
+
 function publish(){
     position = {
         id: randomIntFromInterval(0,39),
@@ -17,7 +19,9 @@ function publish(){
         y:  Math.random() 
     }
     setTimeout(()=>{
-        client.publish('Principal',JSON.stringify(position))
+        if(connected){
+            client.publish('Principal',JSON.stringify(position))
+        }
         publish();
     }, 3500); 
 }
